@@ -24,8 +24,8 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 
 1. Clone o repositório:
    ```bash
-   git clone <url-do-repositorio>
-   cd teste-tecnico```
+   git clone https://github.com/vinive/Test-Ambev
+   cd Test-Ambev```
 
 2. Restaure as dependências do projeto:
     ```dotnet restore```
