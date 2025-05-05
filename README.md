@@ -6,7 +6,6 @@ Bem-vindo ao projeto de backend para o teste técnico! Este repositório contém
 
 - **C#** com **.NET 6/7/8** (dependendo da versão utilizada no projeto)
 - **Entity Framework Core** para manipulação de banco de dados
-- **MediatR** para implementação de padrões como CQRS
 - **xUnit** para testes unitários
 - **Docker** para containerização
 
@@ -31,7 +30,7 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 2. Restaure as dependências do projeto:
     ```dotnet restore .\Ambev.DeveloperEvaluation.sln```
 
-3. Configure o ambiente Docker (se aplicável):
+3. Configure o ambiente Docker :
     ```docker-compose up --build```
 
 4. Execute a migration:
