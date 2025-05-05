@@ -23,9 +23,9 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 ### Passos para Configuração
 
 1. Clone o repositório:
-   ```bash
-   git clone https://github.com/vinive/Test-Ambev
-   cd Test-Ambev
+   ``` bash
+       git clone https://github.com/vinive/Test-Ambev
+       cd Test-Ambev
    ```
 
 2. Restaure as dependências do projeto:
@@ -35,8 +35,8 @@ Certifique-se de ter as seguintes ferramentas instaladas:
     ```docker-compose up --build```
 
 4. Execute a migration:
-    ```cd .\src\Ambev.DeveloperEvaluation.WebApi 
-    dotnet ef database update
+    ``` cd .\src\Ambev.DeveloperEvaluation.WebApi 
+        dotnet ef database update
     ```
 
 5. Execute o projeto:
@@ -44,3 +44,10 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 
 6. Acessar o Swagger 
     ```http://localhost:5119/swagger```
+
+7. Acessando os testes
+    ```
+        cd .\tests\Ambev.DeveloperEvaluation.Unit
+        dotnet test        
+    ```
+
