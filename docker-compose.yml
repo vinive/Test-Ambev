@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  ambev.developerevaluation.database:
+    container_name: ambev_postgres_database
+    image: postgres:13
+
+    environment:
+      POSTGRES_DB: test_ambev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ambev
+    ports:
+      - "5432:5432"
+    restart: unless-stopped

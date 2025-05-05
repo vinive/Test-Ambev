@@ -28,10 +28,16 @@ Certifique-se de ter as seguintes ferramentas instaladas:
    cd Test-Ambev```
 
 2. Restaure as dependências do projeto:
-    ```dotnet restore```
+    ```dotnet restore .\Ambev.DeveloperEvaluation.sln```
 
 3. Configure o ambiente Docker (se aplicável):
 ```docker-compose up --build```
 
-4. Execute o projeto:
+4. Execute a migration:
+```cd .\src\Ambev.DeveloperEvaluation.WebApi 
+    dotnet ef database update```
+
+5. Execute o projeto:
 ```dotnet run --project src/Ambev.DeveloperEvaluation.WebApi```
+
+6. 

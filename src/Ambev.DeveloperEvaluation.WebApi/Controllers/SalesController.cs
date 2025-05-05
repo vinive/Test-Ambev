@@ -10,7 +10,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Controllers
     public class SalesController : ControllerBase
     {
         private readonly DefaultContext _context;
-        
+
         public SalesController(DefaultContext context)
         {
             _context = context;
@@ -31,7 +31,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Controllers
 
         {
             var sale = await _context.Sales.Include(s => s.Items).FirstOrDefaultAsync(s => s.Id == id);
-            
+
             if (sale == null)
                 return NotFound();
 
@@ -42,39 +42,46 @@ namespace Ambev.DeveloperEvaluation.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateSale([FromBody] SaleCreateDto saleDto)
         {
-            var lastSaleNumber = await _context.Sales
-            .OrderByDescending(s => s.SaleNumber)
-            .Select(s => s.SaleNumber)
-            .FirstOrDefaultAsync();
-
-            var sale = new Sale
+            try
             {
-                Customer = saleDto.Customer,
-                Branch = saleDto.Branch,
-                SaleNumber = lastSaleNumber + 1
-            };
-
-            foreach (var itemDto in saleDto.Items)
-            {
-                var item = new SaleItem
+                var sale = new Sale
                 {
-                    Product = itemDto.Product,
-                    Quantity = itemDto.Quantity,
-                    UnitPrice = itemDto.UnitPrice,
-
+                    Customer = saleDto.Customer,
+                    Branch = saleDto.Branch,
                 };
 
-                sale.AddItem(item);
+                foreach (var itemDto in saleDto.Items)
+                {
+                    var item = new SaleItem
+                    {
+                        Product = itemDto.Product,
+                        Quantity = itemDto.Quantity,
+                        UnitPrice = itemDto.UnitPrice,
+                    };
+
+                    sale.AddItem(item);
+                }
+
+                _context.Sales.Add(sale);
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine($"[Evento] SaleCreated: Venda #{sale.Id} criada para o cliente {sale.Customer}");
+
+                return CreatedAtAction(nameof(GetSaleById), new { id = sale.Id }, sale);
             }
+            catch (ArgumentException ex)
+            {
+                
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"[Erro] {ex.Message}");
+                return StatusCode(500, new { Message = "Ocorreu um erro interno no servidor." });
+            }
+        }      
 
-            _context.Sales.Add(sale);
-            await _context.SaveChangesAsync();
-
-            Console.WriteLine($"[Evento] SaleCreated: Venda #{sale.Id} criada para o cliente {sale.Customer}");
-
-            return CreatedAtAction(nameof(GetSaleById), new { id = sale.Id }, sale);
-
-        }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSale(Guid id, [FromBody] SaleUpdateDto saleDto)
         {
@@ -120,7 +127,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Controllers
             return NoContent();
         }
 
-       [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSale(Guid id)
         {
             var sale = await _context.Sales

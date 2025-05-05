@@ -1,8 +1,11 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class Sale
 {
     public Guid Id { get; set; } = Guid.NewGuid();
+    
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int SaleNumber { get; set; } 
     public DateTime Date { get; set; } = DateTime.UtcNow;
     public string Customer { get; set; } = string.Empty;
