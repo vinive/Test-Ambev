@@ -50,13 +50,30 @@ namespace Ambev.DeveloperEvaluation.WebApi.Controllers
                     Branch = saleDto.Branch,
                 };
 
-                foreach (var itemDto in saleDto.Items)
+                var groupedItems = saleDto.Items
+                    .GroupBy(i => i.Product)
+                    .Select(g =>
+                    {
+                        var unitPrices = g.Select(i => i.UnitPrice).Distinct().ToList();
+
+                        if (unitPrices.Count > 1)
+                            throw new ArgumentException($"Produto '{g.Key}' possui múltiplos preços unitários diferentes na lista informada.");
+
+                        return new
+                        {
+                            Product = g.Key,
+                            TotalQuantity = g.Sum(i => i.Quantity),
+                            UnitPrice = unitPrices.First()
+                        };
+                    });
+
+                foreach (var itemGroup in groupedItems)
                 {
                     var item = new SaleItem
                     {
-                        Product = itemDto.Product,
-                        Quantity = itemDto.Quantity,
-                        UnitPrice = itemDto.UnitPrice,
+                        Product = itemGroup.Product,
+                        Quantity = itemGroup.TotalQuantity,
+                        UnitPrice = itemGroup.UnitPrice
                     };
 
                     sale.AddItem(item);
@@ -71,16 +88,16 @@ namespace Ambev.DeveloperEvaluation.WebApi.Controllers
             }
             catch (ArgumentException ex)
             {
-                
+
                 return BadRequest(new { Message = ex.Message });
             }
             catch (Exception ex)
             {
-                
+
                 Console.WriteLine($"[Erro] {ex.Message}");
                 return StatusCode(500, new { Message = "Ocorreu um erro interno no servidor." });
             }
-        }      
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSale(Guid id, [FromBody] SaleUpdateDto saleDto)
@@ -107,6 +124,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Controllers
 
             await _context.SaveChangesAsync();
 
+            Console.WriteLine($"[Evento] SaleModified: Venda #{sale.Id} modificada para o cliente {sale.Customer}");
+
             return NoContent();
         }
 
@@ -121,8 +140,10 @@ namespace Ambev.DeveloperEvaluation.WebApi.Controllers
             if (sale.IsCancelled)
                 return BadRequest("A venda já está cancelada.");
 
-            sale.CancelSale(); // isso já define IsCancelled = true
+            sale.CancelSale();
             await _context.SaveChangesAsync();
+
+            Console.WriteLine($"[Evento] SaleCancelled: Venda #{sale.Id} cancelada para o cliente {sale.Customer}");
 
             return NoContent();
         }

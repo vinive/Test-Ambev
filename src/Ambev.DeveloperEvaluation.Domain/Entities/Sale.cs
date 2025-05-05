@@ -24,6 +24,10 @@ public class Sale
     {
         if (item.Quantity > 20)
             throw new ArgumentException("Não é permitido vender mais de 20 unidade do mesmo produto.");
+        if (item.Quantity <= 0)
+            throw new ArgumentException("Quantidade deve ser maior que zero.");
+        if (item.UnitPrice <= 0)
+            throw new ArgumentException("Preço deve ser maior que zero.");
 
         Items.Add(item);
     }
