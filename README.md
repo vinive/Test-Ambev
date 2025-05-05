@@ -34,7 +34,8 @@ Certifique-se de ter as seguintes ferramentas instaladas:
     ```docker-compose up --build```
 
 4. Execute a migration:
-    ``` cd .\src\Ambev.DeveloperEvaluation.WebApi 
+    ``` 
+        cd .\src\Ambev.DeveloperEvaluation.WebApi 
         dotnet ef database update
     ```
 
