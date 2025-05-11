@@ -29,6 +29,9 @@ public class Program
             builder.AddBasicHealthChecks();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+            builder.Services.AddScoped<ISaleService, SaleService>();
+
 
             builder.Services.AddDbContext<DefaultContext>(options =>
                 options.UseNpgsql(
@@ -61,7 +64,7 @@ public class Program
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            
+
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path == "/")
