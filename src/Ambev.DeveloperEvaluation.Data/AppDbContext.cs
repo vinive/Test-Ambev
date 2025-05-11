@@ -1,21 +1,24 @@
-using Microsoft.EntityFramworkCore;
+using Microsoft.EntityFrameworkCore;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 
 namespace Ambev.DeveloperEvaluation.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> option) : base(options) {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        }
-        {        
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<Sale> Sales => Set<Sale>();
+        public DbSet<SaleItem> SaleItems => Set<SaleItem>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            optionsBuilder.UseSqlServer("Host=localhost;Port=5432;Database=test_ambev;Username=ambev;Password=ambev", 
-                sqlOptions => sqlOptions.MigrationsAssembly("Ambev.DeveloperEvaluation.ORM"));
-        }
-                public DbSet<Sale> Sales => Set<Sales>();
-                public DbSet<SaleItem> SaleItems => Set<SaleItem>()
+            modelBuilder.Entity<Sale>()
+                .HasMany(s => s.Items)
+                .WithOne(i => i.Sale)
+                .HasForeignKey(i => i.SaleId)
+                .OnDelete(DeleteBehavior.Cascade); // Ou Restrict, dependendo da sua lógica
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

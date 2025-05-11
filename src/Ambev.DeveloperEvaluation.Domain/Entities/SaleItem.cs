@@ -1,20 +1,23 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 public class SaleItem
 {
-    public int Id {get; set; }
+    [Key]
+    public int Id { get; set; }
     public string Product { get; set; } = string.Empty;
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
-
     public bool Status { get; set; } = true;
     public decimal Discount => CalculateDiscount();
     public decimal Total => (UnitPrice * Quantity) - Discount;
 
+    [ForeignKey("sale")]
     public Guid SaleId { get; set; }
-    
+
     [JsonIgnore]
-    public Sale Sale { get; set; }
+    public Sale? Sale { get; set; }
 
     private decimal CalculateDiscount()
     {
